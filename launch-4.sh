@@ -26,8 +26,8 @@ done
 
 tmux new-session    "${launch[mnt224:1]}; ${launch[ss512:1]}; python run_fifo.py -i 1; bash" \;  \
      splitw -h -p 67 "${launch[mnt224:2]}; ${launch[ss512:2]}; python run_fifo.py -i 2; bash" \;  \
-     splitw -h -p 50 "cd go-ethereum; sleep 5; ./build/bin/geth --datadir gdata --networkid 10 init genesis.json; env BADGER_SOCK=/tmp/hb GETH_SOCK=/tmp/gethsock ./build/bin/geth --datadir gdata --networkid 10 --password /dev/null --unlock 0 console; bash" \;  \
-     splitw -v -p 50 "bash" \;  \
+     splitw -h -p 50 "cd go-ethereum; sleep 5; ./build/bin/geth --datadir gdata1 --networkid 10 init genesis.json; env BADGER_SOCK=/tmp/hb1 GETH_SOCK=/tmp/geth1 ./build/bin/geth --datadir gdata1 --nodiscover --port 30301 --networkid 10 --password /dev/null --unlock 0 console; bash" \;  \
+     splitw -v -p 50 "cd go-ethereum; sleep 5; ./build/bin/geth --datadir gdata2 --networkid 10 init genesis.json; env BADGER_SOCK=/tmp/hb2 GETH_SOCK=/tmp/geth2 ./build/bin/geth --datadir gdata2 --nodiscover --port 30302 --networkid 10 --password /dev/null --unlock 0 console; bash" \;  \
      selectp -t 0 \; \
      splitw -v -p 50 "${launch[mnt224:3]}; ${launch[ss512:3]}; python run_fifo.py -i 3; bash" \;  \
      selectp -t 2\; \

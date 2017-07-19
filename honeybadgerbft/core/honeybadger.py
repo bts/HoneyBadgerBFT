@@ -63,7 +63,8 @@ class HoneyBadgerBFT():
             while True:
                 new_txes = self.read_txes()
                 self.transaction_buffer += new_txes
-                print 'Received', len(new_txes), 'txes'
+                if len(new_txes) > 0:
+                    print 'Received', len(new_txes), 'txes'
         self._read_txes_thread = gevent.spawn(_read_txes)
 
         # let _read_txes_thread run. this helps already-pending txes make it

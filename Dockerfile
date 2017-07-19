@@ -39,7 +39,7 @@ RUN git clone https://github.com/amiller/honeybadgerbft --branch demo3 HoneyBadg
 WORKDIR $SRC
 
 
-RUN git clone https://github.com/joelburget/go-ethereum #10002
+RUN git clone https://github.com/joelburget/go-ethereum #10003
 
 WORKDIR go-ethereum
 RUN make geth
@@ -58,7 +58,10 @@ WORKDIR $SRC/dkg/DKG_0.8.0/src
 RUN make clean && make
 
 WORKDIR $SRC/
-ADD ./keystore $SRC/go-ethereum/gdata/keystore/
+ADD ./keystore $SRC/go-ethereum/gdata1/keystore/
+ADD ./keystore $SRC/go-ethereum/gdata2/keystore/
+ADD ./keystore $SRC/go-ethereum/gdata3/keystore/
+ADD ./keystore $SRC/go-ethereum/gdata4/keystore/
 ADD . $SRC/
 
 # Run tests by default

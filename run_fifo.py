@@ -190,8 +190,9 @@ def run_badger_node(myID, N, f, sPK, sSK, ePK, eSK):
 
     # Start the honeybadger instance
 
-    if myID == 1:
-        rlp_sock = bind_codec_socket("/tmp/hb", eth_encode, eth_decode)
+    # For the demo, only run geths for 2 nodes
+    if myID < 2:
+        rlp_sock = bind_codec_socket("/tmp/hb" + str(myID+1), eth_encode, eth_decode)
         read_txes = rlp_sock.read
         write_txes = rlp_sock.write
     else:
