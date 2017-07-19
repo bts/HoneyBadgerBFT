@@ -61,8 +61,9 @@ class HoneyBadgerBFT():
 
         def _read_txes():
             while True:
-                self.transaction_buffer += self.read_txes()
-                print 'Received submit tx'
+                new_txes = self.read_txes()
+                self.transaction_buffer += new_txes
+                print 'Received', len(new_txes), 'txes'
         self._read_txes_thread = gevent.spawn(_read_txes)
 
         # let _read_txes_thread run. this helps already-pending txes make it
@@ -89,7 +90,8 @@ class HoneyBadgerBFT():
             send_r = _make_send(r)
             recv_r = self._per_round_recv[r].get
             block_txes = self._run_round(r, txes_to_send, send_r, recv_r)
-            print 'block_txes:', block_txes
+            if block_txes != ():
+                print 'block_txes:', block_txes
 
             self.write_txes(block_txes) # output our new block of transactions
 

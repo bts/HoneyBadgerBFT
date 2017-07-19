@@ -21,6 +21,7 @@ from honeybadgerbft.crypto.threshenc import tpke
 from honeybadgerbft.core.honeybadger import HoneyBadgerBFT
 import rlp
 from rlp.sedes import CountableList
+from honeybadgerbft.core.tx_socket import bind_codec_socket
 from ethereum.transactions import Transaction
 
 def eth_decode(payload):
@@ -50,7 +51,7 @@ def read_keyshare_file(filename, deserialize, N=4):
     This parsing routine is unique to the demo output of the DKG program.
     It returns a master VK, and a share VK for each party
 
-    param deserialize: 
+    param deserialize:
         boldyreva.group.deserialize or tpke.group.deserialize
     Return VK, VKs, SK
     """
@@ -188,12 +189,19 @@ def run_badger_node(myID, N, f, sPK, sSK, ePK, eSK):
         send_queues[j].put(obj)
 
     # Start the honeybadger instance
-    tx_submit = Queue()
-    tx_commit = Queue()
+
+    if myID == 1:
+        rlp_sock = bind_codec_socket("/tmp/hb", eth_encode, eth_decode)
+        read_txes = rlp_sock.read
+        write_txes = rlp_sock.write
+    else:
+        read_txes = Queue().get
+        write_txes = Queue().put
+
     hbbft = HoneyBadgerBFT("sid", myID, 8, N, f,
                            sPK, sSK, ePK, eSK,
                            send, recv,
-                           tx_submit.get, tx_commit.put,
+                           read_txes, write_txes,
                            encode=eth_encode, decode=eth_decode)
     th = Greenlet(hbbft.run)
     th.parent_args = (N, f)
@@ -211,7 +219,7 @@ def exit():
     print "Entering atexit()"
 
 if __name__ == '__main__':
-    
+
     from optparse import OptionParser
     parser = OptionParser()
     parser.add_option("-i", "--index", dest="i",
@@ -242,4 +250,3 @@ if __name__ == '__main__':
     sSK = boldyreva.TBLSPrivateKey(N, f+1, sVK, sVKs, sSK, myID)
 
     run_badger_node(myID, N, f, sPK, sSK, ePK, eSK)
-    

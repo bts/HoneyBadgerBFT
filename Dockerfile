@@ -39,10 +39,10 @@ RUN git clone https://github.com/amiller/honeybadgerbft --branch demo3 HoneyBadg
 WORKDIR $SRC
 
 
-RUN git clone https://github.com/joelburget/go-ethereum #10001
+RUN git clone https://github.com/joelburget/go-ethereum #10002
+
 WORKDIR go-ethereum
 RUN make geth
-#RUN go get ./cmd/geth
 
 ENV LIBRARY_PATH /usr/local/lib
 ENV LD_LIBRARY_PATH /usr/local/lib
@@ -58,11 +58,8 @@ WORKDIR $SRC/dkg/DKG_0.8.0/src
 RUN make clean && make
 
 WORKDIR $SRC/
-# Now add scripts that may change
-ADD ./run_fifo.py $SRC/
-ADD ./launch-4.sh $SRC/
-ADD ./echosock.py $SRC/
 ADD ./keystore $SRC/go-ethereum/gdata/keystore/
+ADD . $SRC/
 
 # Run tests by default
 CMD $SRC/launch-4.sh
